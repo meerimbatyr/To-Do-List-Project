@@ -1,0 +1,17 @@
+.container {
+  max-width: 600px;
+  padding: 2rem;
+  background-color: lightblue;
+}
+
+.red-color {
+  color: red;
+}
+.to-do-list ul {
+  width: 70%;
+  list-style: none;
+}
+.to-do-list ul .list {
+  display: flex;
+  justify-content: space-between;
+}
