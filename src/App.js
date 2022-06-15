@@ -48,6 +48,13 @@ class App extends React.Component {
 
   // };
 
+  handleDelete= (index) => {
+    const copyList = [...this.state.todoList];
+    copyList.splice(index,1);
+    this.setState({todoList: copyList})
+
+  }
+
   render() {
     return (
       <div className="container">
@@ -67,7 +74,7 @@ class App extends React.Component {
         <section className="to-do-list">
           <h2>TODO</h2>
           <ul>
-            {this.state.todoList.map((item) => {
+            {this.state.todoList.map((item,index) => {
               return (
                 <>
                   <li className="list" key={item}>
@@ -76,7 +83,7 @@ class App extends React.Component {
                       <button type="button" onClick={this.handleEdit}>
                         <FaEdit />
                       </button>
-                      <button type="button" onClick={this.handleDelete}>
+                      <button type="button" onClick={() => this.handleDelete(index)}>
                         <FaTrash />
                       </button>
                     </div>
@@ -87,7 +94,7 @@ class App extends React.Component {
           </ul>
         </section>
         <section className="completed-list">
-          <h2>COMPLETED test</h2>
+          <h2>COMPLETED</h2>
         </section>
       </div>
     );
