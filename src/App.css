@@ -1,17 +1,115 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: salmon;
+}
+
 .container {
-  max-width: 600px;
-  padding: 2rem;
-  background-color: lightblue;
+  width: 500px;
+  margin: 100px auto;
+  text-align: center;
+  height: auto;
+}
+
+h1,
+h2,
+h3 {
+  margin: 2rem;
+}
+
+.add-item {
+  box-sizing: border-box;
+}
+
+.add-item__input {
+  width: 400px;
+  height: 40px;
+  padding: 10px;
+  box-sizing: border-box;
+  outline: none;
+  font-size: 1.2rem;
+}
+
+.add-item__input:focus {
+  outline: 2px solid salmon;
+}
+.btn {
+  width: 100px;
+  padding: 10px;
+  height: 40px;
+  border: none;
+
+  box-sizing: border-box;
+  font-weight: bold;
+  cursor: pointer;
+  transition: ease-in-out 0.2s;
+  text-transform: uppercase;
+  font-size: 1rem;
+}
+.add {
+  background-color: white;
+  color: lightblue;
+}
+.clear {
+  color: red;
+  float: right;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.add:hover {
+  background-color: darksalmon;
+  color: white;
+}
+.add-item button:active {
+  background-color: gray;
 }
 
 .red-color {
   color: red;
 }
 .to-do-list ul {
-  width: 70%;
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.to-do-list ul .list {
+.to-do-list ul li {
   display: flex;
   justify-content: space-between;
+  border-bottom: solid 1px salmon;
+  padding: 10px;
+}
+.completed {
+  text-decoration-line: line-through;
+}
+
+.checkbox {
+  margin-right: 1rem;
+}
+
+.edit,
+.delete {
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: ease-in-out 0.5s;
+}
+
+.edit:hover,
+.delete:hover {
+  transform: scale(1.3);
+}
+
+.edit {
+  color: green;
+  margin-right: 1rem;
+}
+.delete {
+  color: red;
 }
