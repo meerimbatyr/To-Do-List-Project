@@ -8,6 +8,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   background-color: salmon;
+  letter-spacing: 0.1rem;
 }
 
 .container {
@@ -20,7 +21,21 @@ body {
 h1,
 h2,
 h3 {
-  margin: 2rem;
+  margin: 1rem;
+}
+
+h1 {
+  color: whitesmoke;
+}
+
+h2 {
+  color: salmon;
+}
+
+.add-item-wrapper {
+  background-color: white;
+  padding: 0.2rem 0.1rem;
+  border-radius: 0.5rem;
 }
 
 .add-item {
@@ -28,52 +43,81 @@ h3 {
 }
 
 .add-item__input {
-  width: 400px;
-  height: 40px;
-  padding: 10px;
+  width: 380px;
+  height: 2.5rem;
+  padding: 0.5rem;
   box-sizing: border-box;
+  border: none;
+  border-radius: 0.5rem;
   outline: none;
   font-size: 1.2rem;
 }
 
-.add-item__input:focus {
-  outline: 2px solid salmon;
-}
 .btn {
   width: 100px;
-  padding: 10px;
+  padding: 0.5rem 1rem;
   height: 40px;
   border: none;
-
+  border-radius: 0.5rem;
   box-sizing: border-box;
   font-weight: bold;
   cursor: pointer;
-  transition: ease-in-out 0.2s;
+  transition: ease-in-out 0.5s;
   text-transform: uppercase;
   font-size: 1rem;
+  letter-spacing: 0.1rem;
 }
 .add {
-  background-color: white;
-  color: lightblue;
+  background-color: salmon;
+  color: white;
 }
 .clear {
-  color: red;
+  width: 120px;
+  color: rgb(238, 7, 7);
   float: right;
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: bold;
+  margin-top: 2rem;
+}
+
+.clear:hover {
+  background-color: grey;
+  color: white;
+  transform: scale(1.1);
 }
 
 .add:hover {
-  background-color: darksalmon;
+  background-color: rgb(245, 93, 76);
   color: white;
+  transform: scale(1.1);
 }
 .add-item button:active {
   background-color: gray;
 }
 
-.red-color {
-  color: red;
+.error-msg {
+  color: darkgrey;
 }
+
+.red-color {
+  color: rgb(95, 5, 5);
+  background-color: white;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  border: 2px rgb(95, 5, 5) solid;
+  font-size: 1.2rem;
+}
+
+/* To do list  */
+
+.to-do-list {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 0.2rem 2rem;
+  padding-bottom: 2rem;
+  height: fit-content;
+}
+
 .to-do-list ul {
   list-style: none;
   margin: 0;
@@ -82,23 +126,27 @@ h3 {
 .to-do-list ul li {
   display: flex;
   justify-content: space-between;
-  border-bottom: solid 1px salmon;
-  padding: 10px;
+  border-bottom: solid 2px salmon;
+  padding: 0.5rem;
+  font-size: 1.2rem;
 }
 .completed {
   text-decoration-line: line-through;
+  font-weight: bold;
 }
 
-.checkbox {
+#checkbox {
   margin-right: 1rem;
 }
 
 .edit,
+.update,
 .delete {
   border: none;
-  font-size: 1rem;
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: ease-in-out 0.5s;
+  transition: ease-in-out 0.3s;
+  background-color: transparent;
 }
 
 .edit:hover,
@@ -110,6 +158,56 @@ h3 {
   color: green;
   margin-right: 1rem;
 }
+
 .delete {
   color: red;
+}
+
+.error-msg {
+  margin-top: 2rem;
+}
+
+#edit-input {
+  font-size: 1.2rem;
+  outline: none;
+  border: none;
+}
+#edit-input:focus {
+  background-color: salmon;
+  border-radius: 0.2rem;
+  padding: 0.2rem;
+}
+
+@media screen and (max-width: 556px) {
+  .container {
+    width: 90%;
+  }
+
+  .add-item-wrapper {
+    background-color: salmon;
+  }
+
+  .add-item__input {
+    width: 100%;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    width: 200px;
+  }
+
+  .add {
+    background-color: white;
+    color: salmon;
+    border: 2px solid grey;
+  }
+  .clear {
+    float: none;
+    border: 2px solid grey;
+  }
+
+  .add:hover {
+    background-color: rgb(149, 145, 145);
+  }
 }

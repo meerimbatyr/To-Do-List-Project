@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { MdUpdate } from "react-icons/md";
 
 class App extends React.Component {
   constructor() {
@@ -12,25 +13,26 @@ class App extends React.Component {
     };
   }
 
-  //value typed in input is stores in this.state
+  //value typed in input is stored in this.state
   //every time we type on input, we will reach that value through the event and update it in this.state
   onChange = (e) => {
-    const { value: inputValue } = e?.target;
-    this.setState({ inputValue, errorMessage: "" });
+    this.setState({ inputValue: e.target.value, errorMessage: "" });
   };
 
-  onSubmit = () => {
+  onAddToDo = () => {
     const { inputValue, todoList: newTodos } = this.state;
     const newAddTodo = {
       name: inputValue,
       isDone: false,
+      isEditing: false,
+      indexEdited: 0,
+      currentValue: "",
+      dataEdited: {},
     };
-    // let inputValue = this.state.inputValue;
-    // let newTodos = [...this.state.todoList];
 
-    if (inputValue === "") {
+    if (!inputValue) {
       this.setState({
-        errorMessage: "Should not be empty string",
+        errorMessage: "You haven't added any todos yet!",
       });
       return;
     }
@@ -38,7 +40,6 @@ class App extends React.Component {
       newTodos.push(newAddTodo);
       this.setState({
         todoList: newTodos,
-        // todoList: [...newTodos, inputValue],
         inputValue: "",
       });
     } else {
@@ -54,39 +55,61 @@ class App extends React.Component {
     this.setState({ todoList });
   };
 
-  handleEdit = (index) => {
-    const copyList = [...this.state.todoList];
-    if (!copyList[index].isDone) {
-      this.state.inputValue = copyList[index].name;
-    }
+  edit = (e) => {
+    // const { value: name } = e.target;
+    console.log(e.target.value);
+    this.setState({ currentValue: e.target.value });
+  };
+
+  handleEdit = (todo, index) => {
+    this.setState({
+      isEditing: !this.state.isEditing,
+      indexEdited: index,
+      currentValue: todo.name,
+    });
+  };
+
+  submitEditTodo = (todo, index) => {
+    let copyList = [...this.state.todoList];
+    copyList[this.state.indexEdited].name = this.state.currentValue;
+    this.setState({
+      isEditing: false,
+      indexEdited: index,
+      name: todo.name,
+      todoList: copyList,
+    });
   };
 
   handleClear = () => this.setState({ todoList: [] });
 
   complete = (index) => {
     const copyList = [...this.state.todoList];
-    copyList[index].isDone = true;
+    copyList[index].isDone = !copyList[index].isDone;
     this.setState({ todoList: copyList });
   };
 
   render() {
     return (
       <div className="container">
-        <h1>TO DO APP</h1>
+        <h1>TO DO LIST</h1>
         <section className="add-item">
-          <h3>ADD TO-DO</h3>
-          <input
-            onChange={this.onChange}
-            value={this.state.inputValue}
-            className="add-item__input"
-            placeholder="Add new task..."
-          />
-          <button className="btn add" onClick={this.onSubmit}>
-            Add
-          </button>
-          {this.state.errorMessage !== "" && (
-            <p className="red-color">{this.state.errorMessage}</p>
-          )}
+          <div className="add-item-wrapper">
+            <input
+              onChange={this.onChange}
+              value={this.state.inputValue}
+              className="add-item__input"
+              placeholder="Add item..."
+            />
+            <button className="btn add" onClick={this.onAddToDo}>
+              ADD
+            </button>
+          </div>
+
+          <div className="error-msg">
+            {this.state.errorMessage !== "" && (
+              <p className="red-color">{this.state.errorMessage}</p>
+            )}
+          </div>
         </section>
         <section className="to-do-list">
           <h2>TASKS TO DO</h2>
@@ -98,18 +121,39 @@ class App extends React.Component {
                     <input
                       onClick={() => this.complete(index)}
                       type="checkbox"
+                      id="checkbox"
                     />
-                    {todo.name}
+                    {this.state.isEditing ? (
+                      <input
+                        onChange={(e) => this.edit(e, index)}
+                        className={todo.isDone ? "completed" : null}
+                        value={todo.name}
+                        id="edit-input"
+                      />
+                    ) : (
+                      <span>{todo.name}</span>
+                    )}
                   </div>
 
                   <div className="btn-container">
-                    <button
-                      className="edit"
-                      type="button"
-                      onClick={() => this.handleEdit(index)}
-                    >
-                      <FaEdit />
-                    </button>
+                    {this.state.isEditing && !todo.isDone ? (
+                      <button
+                        className="edit"
+                        type="button"
+                        onClick={() => this.submitEditTodo(todo, index)}
+                      >
+                        <MdUpdate />
+                      </button>
+                    ) : (
+                      <button
+                        className="edit"
+                        type="button"
+                        onClick={() => this.handleEdit(todo, index)}
+                      >
+                        <FaEdit />
+                      </button>
+                    )}
+
                     <button
                       className="delete"
                       type="button"
@@ -122,11 +166,10 @@ class App extends React.Component {
               );
             })}
           </ul>
-          <button onClick={this.handleClear} className=" btn clear">
-            Clear
-          </button>
         </section>
-        <section className="completed-list"></section>
+        <button onClick={this.handleClear} className=" btn clear">
+          Clear
+        </button>
       </div>
     );
   }
