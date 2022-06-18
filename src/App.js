@@ -10,6 +10,7 @@ class App extends React.Component {
       inputValue: "",
       errorMessage: "",
       todoList: [],
+      isEditing: false,
     };
   }
 
@@ -24,7 +25,6 @@ class App extends React.Component {
     const newAddTodo = {
       name: inputValue,
       isDone: false,
-      isEditing: false,
       indexEdited: 0,
       currentValue: "",
       dataEdited: {},
@@ -32,7 +32,7 @@ class App extends React.Component {
 
     if (!inputValue) {
       this.setState({
-        errorMessage: "You haven't added any todos yet!",
+        errorMessage: "Please, pass a value!",
       });
       return;
     }
@@ -55,28 +55,28 @@ class App extends React.Component {
     this.setState({ todoList });
   };
 
-  edit = (e) => {
-    // const { value: name } = e.target;
-    console.log(e.target.value);
-    this.setState({ currentValue: e.target.value });
-  };
-
   handleEdit = (todo, index) => {
     this.setState({
       isEditing: !this.state.isEditing,
       indexEdited: index,
-      currentValue: todo.name,
+      inputValue: todo.name,
     });
   };
 
-  submitEditTodo = (todo, index) => {
+  // edit = (e) => {
+  //   // const { value: name } = e.target;
+  //   console.log(e.target.value);
+  //   this.setState({ currentValue: e.target.value });
+  // };
+
+  submitEditTodo = () => {
     let copyList = [...this.state.todoList];
-    copyList[this.state.indexEdited].name = this.state.currentValue;
+    console.log(copyList);
+    copyList[this.state.indexEdited].name = this.state.inputValue;
     this.setState({
       isEditing: false,
-      indexEdited: index,
-      name: todo.name,
       todoList: copyList,
+      inputValue: "",
     });
   };
 
@@ -100,9 +100,18 @@ class App extends React.Component {
               className="add-item__input"
               placeholder="Add item..."
             />
-            <button className="btn add" onClick={this.onAddToDo}>
-              ADD
-            </button>
+            {this.state.isEditing ? (
+              <button
+                className="btn edit"
+                onClick={() => this.submitEditTodo()}
+              >
+                EDIT
+              </button>
+            ) : (
+              <button className="btn add" onClick={this.onAddToDo}>
+                ADD
+              </button>
+            )}
           </div>
 
           <div className="error-msg">
@@ -120,13 +129,13 @@ class App extends React.Component {
                   <div>
                     <input
                       onClick={() => this.complete(index)}
+                      className={todo.isDone ? "completed" : null}
                       type="checkbox"
                       id="checkbox"
                     />
                     {this.state.isEditing ? (
                       <input
-                        onChange={(e) => this.edit(e, index)}
-                        className={todo.isDone ? "completed" : null}
+                        onChange={(e) => this.edit(e)}
                         value={todo.name}
                         id="edit-input"
                       />
@@ -136,20 +145,16 @@ class App extends React.Component {
                   </div>
 
                   <div className="btn-container">
-                    {this.state.isEditing && !todo.isDone ? (
-                      <button
-                        className="edit"
-                        type="button"
-                        onClick={() => this.submitEditTodo(todo, index)}
-                      >
-                        <MdUpdate />
-                      </button>
-                    ) : (
+                    {!this.state.isEditing && !todo.isDone ? (
                       <button
                         className="edit"
                         type="button"
                         onClick={() => this.handleEdit(todo, index)}
                       >
+                        <FaEdit />
+                      </button>
+                    ) : (
+                      <button type="button" className="disabled" disabled>
                         <FaEdit />
                       </button>
                     )}
