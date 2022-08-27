@@ -1,42 +1,56 @@
-import React from "react";
+import React, { Component } from "react";
 import "./App.css";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { MdUpdate } from "react-icons/md";
 
-class App extends React.Component {
-  constructor() {
-    super();
+class App extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
       inputValue: "",
       errorMessage: "",
       todoList: [],
       isEditing: false,
+      idEdited: 0,
     };
   }
 
-  //value typed in input is stored in this.state
-  //every time we type on input, we will reach that value through the event and update it in this.state
   onChange = (e) => {
     this.setState({ inputValue: e.target.value, errorMessage: "" });
   };
 
-  onAddToDo = () => {
-    const { inputValue, todoList: newTodos } = this.state;
+  addToDo = () => {
+    const generateId = () => {
+      return Math.floor(new Date() * Math.random() * 1000);
+    };
+
+    const { inputValue, todoList } = this.state;
+    const newTodos = [...todoList];
     const newAddTodo = {
+      id: generateId(),
       name: inputValue,
-      isDone: false,
-      indexEdited: 0,
-      currentValue: "",
-      dataEdited: {},
+      checked: false,
     };
 
     if (!inputValue) {
       this.setState({
         errorMessage: "Please, pass a value!",
       });
+      setTimeout(() => {
+        this.setState({
+          errorMessage: "",
+        });
+      }, 2000);
       return;
     }
-    if (newTodos.indexOf(inputValue) === -1) {
+
+    //fucntion that checks if value is already in the list
+    const findValue = (inputValue) => {
+      return newTodos.some((item) => {
+        return item.name === inputValue;
+      });
+    };
+
+    if (findValue(inputValue) === false) {
       newTodos.push(newAddTodo);
       this.setState({
         todoList: newTodos,
@@ -46,33 +60,51 @@ class App extends React.Component {
       this.setState({
         errorMessage: "Already exists",
       });
+      setTimeout(() => {
+        this.setState({
+          errorMessage: "",
+        });
+      }, 2000);
     }
   };
 
-  handleDelete = (index) => {
+  handleDelete = (id) => {
     const { todoList } = this.state;
-    todoList.splice(index, 1);
-    this.setState({ todoList });
+    // const newTodos = [...todoList];
+    // newTodos.splice(index, 1);
+
+    //with for loop
+    // const newTodos = [];
+    // for (let i = 0; i < todoList.length; i++) {
+    //   if (index !== i) {
+    //     newTodos.push(todoList[i]);
+    //   }
+    // }
+
+    //with filter
+    const newTodos = todoList.filter((todo) => todo.id !== id);
+    this.setState({ todoList: newTodos });
   };
 
-  handleEdit = (todo, index) => {
+  handleEdit = (todo, id) => {
     this.setState({
       isEditing: !this.state.isEditing,
-      indexEdited: index,
       inputValue: todo.name,
+      idEdited: id,
     });
   };
 
-  // edit = (e) => {
-  //   // const { value: name } = e.target;
-  //   console.log(e.target.value);
-  //   this.setState({ currentValue: e.target.value });
-  // };
-
   submitEditTodo = () => {
     let copyList = [...this.state.todoList];
-    console.log(copyList);
-    copyList[this.state.indexEdited].name = this.state.inputValue;
+    console.log(this.state);
+    const { inputValue, idEdited } = this.state;
+    copyList.map((item) => {
+      if (item.id === idEdited) {
+        item.name = inputValue;
+      }
+      return item;
+    });
+
     this.setState({
       isEditing: false,
       todoList: copyList,
@@ -84,11 +116,12 @@ class App extends React.Component {
 
   complete = (index) => {
     const copyList = [...this.state.todoList];
-    copyList[index].isDone = !copyList[index].isDone;
+    copyList[index].checked = !copyList[index].checked;
     this.setState({ todoList: copyList });
   };
 
   render() {
+    const { todoList, inputValue, errorMessage, isEditing } = this.state;
     return (
       <div className="container">
         <h1>TO DO LIST</h1>
@@ -96,60 +129,46 @@ class App extends React.Component {
           <div className="add-item-wrapper">
             <input
               onChange={this.onChange}
-              value={this.state.inputValue}
+              value={inputValue}
               className="add-item__input"
               placeholder="Add item..."
             />
-            {this.state.isEditing ? (
-              <button
-                className="btn edit"
-                onClick={() => this.submitEditTodo()}
-              >
+            {isEditing ? (
+              <button className="btn edit" onClick={this.submitEditTodo}>
                 EDIT
               </button>
             ) : (
-              <button className="btn add" onClick={this.onAddToDo}>
+              <button className="btn add" onClick={this.addToDo}>
                 ADD
               </button>
             )}
           </div>
 
           <div className="error-msg">
-            {this.state.errorMessage !== "" && (
-              <p className="red-color">{this.state.errorMessage}</p>
-            )}
+            {errorMessage !== "" && <p className="danger">{errorMessage}</p>}
           </div>
         </section>
         <section className="to-do-list">
           <h2>TASKS TO DO</h2>
           <ul>
-            {this.state.todoList.map((todo, index) => {
+            {todoList.map((todo, index) => {
               return (
-                <li key={index} className={todo.isDone ? "completed" : null}>
+                <li key={todo.id} className={todo.checked ? "completed" : null}>
                   <div>
                     <input
-                      onClick={() => this.complete(index)}
-                      className={todo.isDone ? "completed" : null}
+                      onChange={(e) => this.complete(index)}
                       type="checkbox"
                       id="checkbox"
                     />
-                    {this.state.isEditing ? (
-                      <input
-                        onChange={(e) => this.edit(e)}
-                        value={todo.name}
-                        id="edit-input"
-                      />
-                    ) : (
-                      <span>{todo.name}</span>
-                    )}
+                    <span>{todo.name}</span>
                   </div>
 
                   <div className="btn-container">
-                    {!this.state.isEditing && !todo.isDone ? (
+                    {!isEditing && !todo.checked ? (
                       <button
                         className="edit"
                         type="button"
-                        onClick={() => this.handleEdit(todo, index)}
+                        onClick={() => this.handleEdit(todo, todo.id)}
                       >
                         <FaEdit />
                       </button>
@@ -162,7 +181,7 @@ class App extends React.Component {
                     <button
                       className="delete"
                       type="button"
-                      onClick={() => this.handleDelete(index)}
+                      onClick={() => this.handleDelete(todo.id)}
                     >
                       <FaTrash />
                     </button>
@@ -173,7 +192,7 @@ class App extends React.Component {
           </ul>
         </section>
         <button onClick={this.handleClear} className=" btn clear">
-          Clear
+          Clear List
         </button>
       </div>
     );
